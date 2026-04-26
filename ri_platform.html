@@ -236,7 +236,7 @@ tbody tr:hover td{background:var(--s2)}
 
   <div class="sb-sec">Мониторинг</div>
   <div class="sb-item act" data-v="dash" onclick="go('dash')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>Дашборд<span class="cnt" id="nc-proj"></span></div>
-  <div class="sb-item" data-v="active" onclick="go('active')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Действующие НПА<span class="cnt" id="nc-act"></span></div>
+  <div class="sb-item" data-v="active" onclick="go('active')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Принятые НПА<span class="cnt" id="nc-act"></span></div>
   <div class="sb-item" data-v="cal" onclick="go('cal')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Календарь</div>
 
   <div class="sb-sec">Продукты</div>
@@ -406,9 +406,9 @@ function rActive(){
   list.sort((a,b)=>new Date(a.dateEffective)-new Date(b.dateEffective));
 
   document.getElementById('ct').innerHTML=`
-  <div class="ph"><div class="pb">Regulatory Intelligence <span class="sp">/</span> Действующие НПА</div><div class="pt">Действующие нормативные акты</div><div class="ps">Принятые акты с датами вступления изменений в силу</div></div>
+  <div class="ph"><div class="pb">Regulatory Intelligence <span class="sp">/</span> Принятые НПА</div><div class="pt">Принятые нормативные акты</div><div class="ps">Принятые акты с датами вступления изменений в силу</div></div>
   <div class="tw">
-    <div class="th"><div class="th-t">Действующие НПА</div><div class="th-c">${list.length} записей</div></div>
+    <div class="th"><div class="th-t">Принятые НПА</div><div class="th-c">${list.length} записей</div></div>
     <table><thead><tr><th>Акт</th><th>Продукт</th><th>Дата принятия</th><th>Вступает в силу</th></tr></thead>
     <tbody>${list.map(a=>`<tr onclick="openAct(${a.id})">
       <td><div class="c-ts">${a.docType} · ${a.issuedBy}</div><div class="c-t">${a.title}</div></td>
@@ -490,7 +490,7 @@ function rProd(){
     </tr>`).join('')}</tbody></table></div>`:''}
 
   ${aList.length?`<div class="tw">
-    <div class="th"><div class="th-t">Действующие НПА</div><div class="th-c">${aList.length}</div></div>
+    <div class="th"><div class="th-t">Принятые НПА</div><div class="th-c">${aList.length}</div></div>
     <table><thead><tr><th>Акт</th><th>Принят</th><th>Вступает в силу</th></tr></thead>
     <tbody>${aList.map(a=>`<tr onclick="openAct(${a.id})">
       <td><div class="c-ts">${a.docType}</div><div class="c-t">${a.title}</div></td>
