@@ -252,7 +252,7 @@ tbody tr:hover td{background:var(--s2)}
     <div class="srch"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input id="gs" placeholder="Поиск по названию…" oninput="gsearch(this.value)"></div>
     <div class="top-r">
       <button class="btn btn-p" onclick="openNew('project')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Новый проект</button>
-      <button class="btn btn-s" onclick="openNew('active')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/></svg>Действующий НПА</button>
+      <button class="btn btn-s" onclick="openNew('active')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/></svg>Принятый акт</button>
     </div>
   </div>
   <div class="ct" id="ct"></div>
@@ -603,7 +603,7 @@ function showEditForm(item,isNew,type){
   const selProds=item.products||[];
 
   document.getElementById('mo-in').innerHTML=`<style>#mo-box{max-width:700px}</style>
-  <div class="mo-h"><div><div class="mo-st">${isNew?'Создание':'Редактирование'}</div><div class="mo-t">${isNew?(isProj?'Новый проект':'Новый действующий НПА'):item.title}</div></div>
+  <div class="mo-h"><div><div class="mo-st">${isNew?'Создание':'Редактирование'}</div><div class="mo-t">${isNew?(isProj?'Новый проект':'Новый принятый акт'):item.title}</div></div>
     <button class="mo-x" onclick="${isNew?'closeMo()':(isProj?`openProj(${item.id})`:`openAct(${item.id})`)}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
   </div>
   <div class="mo-bd">
