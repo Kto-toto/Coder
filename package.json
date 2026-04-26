@@ -1,0 +1,19 @@
+{
+  "name": "ri-platform",
+  "version": "1.0.0",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "Regulatory Intelligence Platform",
+  "devDependencies": {
+    "electron": "^41.3.0"
+  },
+  "dependencies": {
+    "better-sqlite3": "^12.9.0"
+  }
+}

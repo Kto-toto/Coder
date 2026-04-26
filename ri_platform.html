@@ -298,10 +298,9 @@ const D_ACT=[
 {id:104,title:'О страховых агентах (обновление требований)',docType:'Постановление Правительства',issuedBy:'Правительство РФ',products:['Страхование','ОСАГО'],dateAdopted:'2025-04-10',dateEffective:'2025-10-01',description:'Новые квалификационные требования к страховым агентам. Обязательная аттестация.',links:[],notes:[]},
 ];
 
-let projects=JSON.parse(localStorage.getItem('ri6_p')||'null')||D_PROJ;
-let actives=JSON.parse(localStorage.getItem('ri6_a')||'null')||D_ACT;
+let projects = [];
+let actives = [];
 
-function save(){localStorage.setItem('ri6_p',JSON.stringify(projects));localStorage.setItem('ri6_a',JSON.stringify(actives))}
 const fd=d=>{if(!d)return'—';const[y,m,day]=d.split('-');return`${day}.${m}.${y}`};
 const dTo=d=>d?Math.ceil((new Date(d)-new Date())/864e5):999;
 const relD=d=>{if(!d)return'';const n=dTo(d);if(n===0)return'сегодня';if(n===1)return'завтра';if(n>1&&n<=30)return`через ${n} дн.`;if(n<0&&n>=-30)return`${-n} дн. назад`;return''};
@@ -319,12 +318,12 @@ function pipeHtml(docType,curStage){
 }
 
 let view='dash',curProd='',sq='';
-function go(v){view=v;curProd='';sq='';document.getElementById('gs').value='';setNav();render();window.scrollTo({top:0,behavior:'smooth'})}
-function goProd(p){view='prod';curProd=p;sq='';document.getElementById('gs').value='';setNav();render();window.scrollTo({top:0,behavior:'smooth'})}
+async function go(v){view=v;curProd='';sq='';document.getElementById('gs').value='';setNav();await render();window.scrollTo({top:0,behavior:'smooth'})}
+async function goProd(p){view='prod';curProd=p;sq='';document.getElementById('gs').value='';setNav();await render();window.scrollTo({top:0,behavior:'smooth'})}
 function gsearch(q){sq=q.toLowerCase();if(view!=='dash'&&view!=='active'&&view!=='prod'){view='dash';setNav()}render()}
 function setNav(){document.querySelectorAll('.sb-item').forEach(el=>el.classList.remove('act'));const a=document.querySelector(`.sb-item[data-v="${view}"]`);if(a)a.classList.add('act');if(view==='prod')document.querySelectorAll('.sb-item').forEach(el=>{if(el.textContent.trim().startsWith(curProd))el.classList.add('act')})}
 
-function render(){
+async function render(){
   document.getElementById('nc-proj').textContent=projects.length;
   document.getElementById('nc-act').textContent=actives.length;
   PRODS.forEach(p=>{const el=document.getElementById('pc-'+p);if(el)el.textContent=projects.filter(i=>i.products.includes(p)).length+actives.filter(i=>i.products.includes(p)).length});
@@ -434,7 +433,7 @@ function rCal(){
     const isPr=e.type==='proj';
     return`<div class="cal-cd" onclick="${isPr?`openProj(${e.id})`:`openAct(${e.id})`}">
       <div class="cal-cd-top">
-        <span class="cal-cd-src ${isPr?'proj':'active'}">${isPr?'Проект':'Действующий'}</span>
+        <span class="cal-cd-src ${isPr?'proj':'active'}">${isPr?'Проект':'Принятый'}</span>
         ${isPr?rB(e.risk):''}
         <span style="font-size:11px;color:var(--t3)">${e.docType}</span>
       </div>
@@ -463,7 +462,7 @@ function rCal(){
   <div class="ph"><div class="pb">Regulatory Intelligence <span class="sp">/</span> Календарь</div><div class="pt">Календарь изменений</div><div class="ps">Единая хронология: прогнозные даты по проектам и точные даты вступления принятых актов</div></div>
   <div style="background:var(--acc-bg);border:1px solid rgba(37,99,235,.15);border-radius:var(--rl);padding:12px 16px;margin-bottom:18px;font-size:13px;display:flex;align-items:center;gap:10px;color:var(--t)">
     <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--acc)" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-    <span><span class="cal-cd-src proj" style="font-size:9.5px;vertical-align:1px">Проект</span> — прогнозная дата принятия&emsp;<span class="cal-cd-src active" style="font-size:9.5px;vertical-align:1px">Действующий</span> — дата вступления в силу. Красным выделены ближайшие 14 дней.</span>
+    <span><span class="cal-cd-src proj" style="font-size:9.5px;vertical-align:1px">Проект</span> — прогнозная дата принятия&emsp;<span class="cal-cd-src active" style="font-size:9.5px;vertical-align:1px">Принятый</span> — дата вступления в силу. Красным выделены ближайшие 14 дней.</span>
   </div>
   <div>${events.length?Object.keys(byMonth).sort().map(mk=>`<div class="cal-m">${byMonth[mk].label}</div>${byMonth[mk].dates.map(dateGrp).join('')}`).join(''):'<div style="padding:40px 20px;text-align:center;color:var(--t3);background:var(--s);border:1px dashed var(--bs);border-radius:var(--rl)">Нет событий</div>'}</div>`;
 }
@@ -662,28 +661,89 @@ function lkRow(l,i){return`<div class="lk-er"><input placeholder="Названи
 function addLk(){editLinks.push({title:'',url:'',type:'Официальный текст'});document.getElementById('links-ed').insertAdjacentHTML('beforeend',lkRow(editLinks[editLinks.length-1],editLinks.length-1))}
 function rmLk(i){editLinks.splice(i,1);document.getElementById('links-ed').innerHTML=editLinks.map((l,j)=>lkRow(l,j)).join('')}
 
-function saveItem(id,isNew,type){
+async function saveItem(id,isNew,type){
   const g=s=>{const el=document.getElementById(s);return el?el.value.trim():''};
   const title=g('f-title');if(!title){toast('Укажите название');return}
   const cleanLinks=editLinks.filter(l=>l.title&&l.url);
   const prods=window._editProds||[];
 
   if(type==='proj'){
-    const data={title,docType:g('f-doctype'),initiator:g('f-init'),products:prods,risk:g('f-risk'),stage:g('f-stage'),dateAppeared:g('f-appeared'),dateForecast:g('f-forecast'),description:g('f-desc'),links:cleanLinks};
-    if(isNew){projects.unshift({id,isNew:true,...data,notes:[{date:new Date().toLocaleDateString('ru-RU'),text:'Проект добавлен в мониторинг.'}]})}
-    else{const old=projects.find(x=>x.id===id);Object.assign(old,data,{isNew:false})}
+    const data={id,title,docType:g('f-doctype'),initiator:g('f-init'),products:prods,risk:g('f-risk'),stage:g('f-stage'),dateAppeared:g('f-appeared'),dateForecast:g('f-forecast'),description:g('f-desc'),links:cleanLinks};
+    await saveProject(data);
   }else{
-    const data={title,docType:g('f-doctype-a'),issuedBy:g('f-issued'),products:prods,dateAdopted:g('f-adopted'),dateEffective:g('f-effective'),description:g('f-desc'),links:cleanLinks};
-    if(isNew){actives.unshift({id,...data,notes:[{date:new Date().toLocaleDateString('ru-RU'),text:'Акт добавлен в базу.'}]})}
-    else{const old=actives.find(x=>x.id===id);Object.assign(old,data)}
+    const data={id,title,docType:g('f-doctype-a'),issuedBy:g('f-issued'),products:prods,dateAdopted:g('f-adopted'),dateEffective:g('f-effective'),description:g('f-desc'),links:cleanLinks};
+    await saveActive(data);
   }
-  save();toast(isNew?'Создано':'Сохранено');closeMo();render();
+  
+  toast(isNew?'Создано':'Сохранено');closeMo();
+  await loadProjects();
+  await loadActives();
+  render();
 }
 
 function closeMo(){document.getElementById('mo').classList.remove('open')}
 function hBd(e){if(e.target===e.currentTarget)closeMo()}
 
-render();
+// ============= ELECTRON IPC =============
+const { ipcRenderer } = require('electron');
+
+let products = [];
+
+async function loadProducts() {
+  products = await ipcRenderer.invoke('get-products');
+}
+
+async function loadProjects() {
+  projects = await ipcRenderer.invoke('get-projects');
+}
+
+async function loadActives() {
+  actives = await ipcRenderer.invoke('get-actives');
+}
+
+async function saveProject(data) {
+  if (data.id) {
+    return await ipcRenderer.invoke('update-project', data.id, data);
+  } else {
+    return await ipcRenderer.invoke('add-project', data);
+  }
+}
+
+async function saveActive(data) {
+  if (data.id) {
+    return await ipcRenderer.invoke('update-active', data.id, data);
+  } else {
+    return await ipcRenderer.invoke('add-active', data);
+  }
+}
+
+async function deleteProject(id) {
+  return await ipcRenderer.invoke('delete-project', id);
+}
+
+async function deleteActive(id) {
+  return await ipcRenderer.invoke('delete-active', id);
+}
+
+async function moveToActive(projectId) {
+  return await ipcRenderer.invoke('move-to-active', projectId);
+}
+
+async function getStats() {
+  return await ipcRenderer.invoke('get-stats');
+}
+
+async function searchItems(query) {
+  return await ipcRenderer.invoke('search-items', query);
+}
+
+// Инициализация приложения
+(async () => {
+  await loadProducts();
+  await loadProjects();
+  await loadActives();
+  render();
+})();
 </script>
 </body>
 </html>

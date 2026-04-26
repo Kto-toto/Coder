@@ -1,50 +1,65 @@
-*.pyc
-__pycache__/
-*.log
-*.tmp
-*.swp
+```
+# Dependencies
+node_modules/
+
+# Environment
 .env
 .env.local
+.env.*
+
+# Logs and temp files
+*.log
+*.tmp
+
+# Editors
 .vscode/
 .idea/
-dist/
-build/
-node_modules/
-.venv/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
 venv/
-target/
-.gradle/
+.venv/
+pip-log.txt
+pip-delete-this-directory.txt
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.log
+.git/
 .mypy_cache/
 .pytest_cache/
-coverage/
-htmlcov/
-*.zip
-*.gz
-*.tar
-*.tgz
-*.bz2
-*.xz
-*.7z
-*.rar
-*.zst
-*.lz4
-*.lzh
-*.cab
-*.arj
-*.rpm
-*.deb
-*.Z
-*.lz
-*.lzo
-*.tar.gz
-*.tar.bz2
-*.tar.xz
-*.tar.zst
+.hypothesis/
+
+# Build results
+dist/
+build/
+*.egg-info/
+.eggs/
+
+# Node.js
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Compiled JavaScript
+*.min.js
+*.map
+
+# OS generated files
 .DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
 Thumbs.db
-*.class
-*.exe
-*.dll
-*.so
-*.a
-*.out
+```
